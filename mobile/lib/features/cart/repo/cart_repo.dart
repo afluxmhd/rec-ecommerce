@@ -73,4 +73,14 @@ class CartRepo {
       );
     });
   }
+
+  FutureVoid deleteCart(String id) async {
+    try {
+      return right(_carts.doc(id).delete());
+    } on FirebaseException catch (e) {
+      return left(Failure(e.message.toString()));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

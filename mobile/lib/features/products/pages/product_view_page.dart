@@ -71,6 +71,9 @@ class _ProductViewPageState extends ConsumerState<ProductViewPage> {
           body: SingleChildScrollView(
             child: ref.watch(cartItemStreamProvider(widget.product.id)).when(
                 data: (item) {
+                  if (item == null) {
+                    print("NULL");
+                  }
                   isItemExist = item!.id != "NO CART";
                   cartItem = item;
                   return Column(

@@ -44,4 +44,12 @@ class ProductsRepo {
       );
     });
   }
+
+  Stream<Product> getProductByName(String title) {
+    return _products.where("title", isEqualTo: title).snapshots().map((querySnapshot) {
+      return Product.fromMap(
+        querySnapshot.docs.first.data() as Map<String, dynamic>,
+      );
+    });
+  }
 }

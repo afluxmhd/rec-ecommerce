@@ -5,6 +5,7 @@ import 'package:rec_ecommerce/core/design/components/app_text.dart';
 import 'package:rec_ecommerce/core/design/components/icon_button.dart';
 import 'package:rec_ecommerce/core/design/shared/app_colors.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
+import 'package:rec_ecommerce/features/order/controller/order_controller.dart';
 import 'package:rec_ecommerce/models/cart.dart';
 import 'package:rec_ecommerce/widgets/cart_list_card_widget.dart';
 
@@ -24,9 +25,14 @@ class _CartPageState extends ConsumerState<CartPage> {
     setState(() {});
   }
 
+  void fetchCart() {
+    ref.read(cartControllerProvider.notifier).fetchExistingCart(context);
+  }
+
   @override
   void initState() {
     getCartID();
+    fetchCart();
     super.initState();
   }
 
@@ -91,7 +97,7 @@ class _CartPageState extends ConsumerState<CartPage> {
             ),
             bottomNavigationBar: GestureDetector(
               onTap: () {
-                // print("object");
+                ref.read(orderControllerProvider.notifier).orderCartProducts(context: context);
               },
               child: Container(
                 height: 56.h,
@@ -108,10 +114,36 @@ class _CartPageState extends ConsumerState<CartPage> {
   Widget _buildCartWidget(Cart? data) {
     cart = data;
     if (data == null) {
-      return Center(child: AppText.bodyOneMedium("Cart is not initialized"));
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 30.h),
+          Image.asset(
+            "assets/images/add_to_cart.png",
+            height: 200.h,
+            width: 200.w,
+          ),
+          Center(
+            child: AppText.bodyOneMedium("EMPTY CART!"),
+          ),
+        ],
+      );
     }
     if (data.cartProducts.isEmpty) {
-      return Center(child: AppText.bodyOneMedium("EMPTY CART!"));
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 30.h),
+          Image.asset(
+            "assets/images/add_to_cart.png",
+            height: 200.h,
+            width: 200.w,
+          ),
+          Center(
+            child: AppText.bodyOneMedium("EMPTY CART!"),
+          ),
+        ],
+      );
     }
     return ListView.builder(
       itemBuilder: (ctx, index) => CartListCardWidget(

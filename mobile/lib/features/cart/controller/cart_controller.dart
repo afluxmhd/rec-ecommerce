@@ -4,6 +4,7 @@ import 'package:rec_ecommerce/core/design/components/app_snackbar.dart';
 import 'package:rec_ecommerce/features/cart/repo/cart_repo.dart';
 import 'package:rec_ecommerce/models/cart.dart';
 import 'package:rec_ecommerce/models/cart_item.dart';
+import 'package:rec_ecommerce/models/order.dart';
 import 'package:rec_ecommerce/models/product.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -208,11 +209,8 @@ class CartController extends StateNotifier<bool> {
     }
   }
 
-  Future<void> orderCartProducts() async {
-    //delete cart from firebase
-    //remove cart id
-    //clear providers (id,cart)
-    //update firebase list for py as per category
+  Future<void> deleteCart(String id) async {
+    await _cartRepo.deleteCart(id);
   }
 
   Future<void> saveCartID(String cartID) async {

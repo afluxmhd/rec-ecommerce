@@ -38,7 +38,9 @@ class ProductsController extends StateNotifier<bool> {
     return _productsRepo.getProductsByCategory(category);
   }
 
-  //get recent purchase product
+  Future<Product> getProductByName(String name) async {
+    return await _productsRepo.getProductByName(name).first;
+  }
 
   void getFrequentlyBoughtProducts(String category) {
     //

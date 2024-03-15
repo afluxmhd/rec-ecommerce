@@ -6,10 +6,11 @@ import 'package:rec_ecommerce/core/design/components/icon_button.dart';
 import 'package:rec_ecommerce/core/design/shared/app_colors.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
 import 'package:rec_ecommerce/features/cart/pages/cart_page.dart';
+import 'package:rec_ecommerce/features/order/controller/order_controller.dart';
 import 'package:rec_ecommerce/features/products/pages/product_list_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
@@ -46,9 +47,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const AppIconButton(
+                AppIconButton(
                   svgPath: "assets/icons/Category.svg",
                   bgColor: Colors.transparent,
+                  onTap: () {
+                    ref.read(orderControllerProvider.notifier).getRecentOrders();
+                  },
                 ),
                 AppIconButton(
                   svgPath: "assets/icons/Bag 2.svg",
