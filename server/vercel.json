@@ -1,7 +1,7 @@
 {
   "functions": {
     "api": {
-      "runtime": "@vercel/python"
+      "runtime": "now-python3@3.11"
     }
   },
   "routes": [
