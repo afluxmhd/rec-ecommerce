@@ -1,18 +1,18 @@
 {
-  "functions": {
-    "api": {
-      "runtime": "now-python3@3.11"
-    }
-  },
+  "devCommand": "uvicorn app:app --host 0.0.0.0 --port 3000",
+  "builds": [
+      {
+          "src": "app/main.py",
+          "use": "@vercel/python"
+      }
+  ],
   "routes": [
-    { "handle": "filesystem" },
-    {
-      "src": "/(.*)",
-      "dest": "/main.py"
-    }
+      {
+          "src": "/(.*)",
+          "dest": "main.py"
+      }
   ]
 }
-
 
 
 
