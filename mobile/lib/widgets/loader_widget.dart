@@ -7,11 +7,13 @@ class LoaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 30.w,
-      width: 30.h,
-      child: const Center(
-        child: CircularProgressIndicator(color: AppColors.kAccent),
+    return Center(
+      child: SizedBox(
+        height: 30.w,
+        width: 30.h,
+        child: const Center(
+          child: CircularProgressIndicator(color: AppColors.kAccent),
+        ),
       ),
     );
   }

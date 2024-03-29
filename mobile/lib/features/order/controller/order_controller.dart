@@ -3,21 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
 import 'package:rec_ecommerce/features/order/repository/order_repo.dart';
 import 'package:rec_ecommerce/features/products/controller/products_controller.dart';
+import 'package:rec_ecommerce/models/frequent_items.dart';
 import 'package:rec_ecommerce/models/order.dart';
 import 'package:rec_ecommerce/models/product.dart';
+import 'package:rec_ecommerce/services/frequent_items/frequent_item_service.dart';
 
 final orderControllerProvider = StateNotifierProvider<OrderController, bool>((ref) {
   final orderRepo = ref.watch(ordersRepositoryProvider);
-  return OrderController(ref: ref, orderRepo: orderRepo);
+  final frequentItemService = ref.watch(frequentItemServiceProvider);
+  return OrderController(ref: ref, orderRepo: orderRepo, frequentItemServices: frequentItemService);
 });
 
 class OrderController extends StateNotifier<bool> {
   final OrderRepo _orderRepo;
   final Ref _ref;
+  final FrequentItemServices _frequentItemServices;
 
-  OrderController({required OrderRepo orderRepo, required Ref ref})
+  OrderController({required OrderRepo orderRepo, required Ref ref, required FrequentItemServices frequentItemServices})
       : _orderRepo = orderRepo,
         _ref = ref,
+        _frequentItemServices = frequentItemServices,
         super(false);
 
   Future<void> orderCartProducts({required BuildContext context}) async {
@@ -59,13 +64,42 @@ class OrderController extends StateNotifier<bool> {
     List<Product> products = [];
     var orders = await _orderRepo.getOrders("DEMO").first;
 
-    for (var category in orders!.allItems) {
-      for (var title in category.items) {
-        Product product = await _ref.read(productsControllerProvider.notifier).getProductByName(title);
-        products.add(product);
+    if (orders != null) {
+      for (var category in orders.allItems) {
+        for (var title in category.items) {
+          Product product = await _ref.read(productsControllerProvider.notifier).getProductByName(title);
+          products.add(product);
+        }
       }
     }
+
     state = false;
     return products;
+  }
+
+  void getFrequentlyBoughtProducts(BuildContext context, String category, {int itemCount = 2, double support = 0.5}) async {
+    var allOrders = await _orderRepo.getAllOrders().first;
+
+    Map<String, List<String>> productsByOrderId = {};
+
+    for (var order in allOrders) {
+      for (var productByCategory in order.allItems) {
+        if (productByCategory.category == category) {
+          if (!productsByOrderId.containsKey(order.orderId)) {
+            productsByOrderId[order.orderId] = [];
+          }
+          productsByOrderId[order.orderId]?.addAll(productByCategory.items);
+        }
+      }
+    }
+
+    Map<String, List<String>> formattedOutput = {};
+    productsByOrderId.forEach((orderId, products) {
+      formattedOutput[orderId] = products;
+    });
+
+    FrequentItems frequentItems = FrequentItems(dataset: formattedOutput, support: support, itemCount: itemCount);
+    var res = await _frequentItemServices.getFrequenctProducts(frequentItems, context);
+    print(res);
   }
 }

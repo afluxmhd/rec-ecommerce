@@ -114,7 +114,6 @@ class CartController extends StateNotifier<bool> {
         Navigator.pop(context);
       });
     } else {
-      //fetch cart
       var existingCart = await getCartById(cartID).first;
       if (existingCart != null) {
         int index = existingCart.cartProducts

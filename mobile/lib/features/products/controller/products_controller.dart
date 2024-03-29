@@ -41,8 +41,4 @@ class ProductsController extends StateNotifier<bool> {
   Future<Product> getProductByName(String name) async {
     return await _productsRepo.getProductByName(name).first;
   }
-
-  void getFrequentlyBoughtProducts(String category) {
-    //
-  }
 }

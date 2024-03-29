@@ -32,4 +32,12 @@ class OrderRepo {
       );
     });
   }
+
+  Stream<List<app.Order>> getAllOrders() {
+    return _orders.snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((doc) {
+        return app.Order.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
+    });
+  }
 }

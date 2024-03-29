@@ -71,10 +71,12 @@ class _ProductViewPageState extends ConsumerState<ProductViewPage> {
           body: SingleChildScrollView(
             child: ref.watch(cartItemStreamProvider(widget.product.id)).when(
                 data: (item) {
-                  if (item == null) {
-                    print("NULL");
+                  if (item != null) {
+                    isItemExist = item.id != "NO CART";
+                  } else {
+                    isItemExist = false;
                   }
-                  isItemExist = item!.id != "NO CART";
+
                   cartItem = item;
                   return Column(
                     children: [
@@ -167,7 +169,7 @@ class _ProductViewPageState extends ConsumerState<ProductViewPage> {
                                   ),
                                 ),
                                 AppText.bodyTwoSemiBold(
-                                  isItemExist ? item.quantity.toString() : _quantity.toString(),
+                                  isItemExist ? item!.quantity.toString() : _quantity.toString(),
                                   color: AppColors.kOnPrimary,
                                 ),
                                 GestureDetector(

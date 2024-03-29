@@ -10,6 +10,11 @@ class Dataset(BaseModel):
     support: float
     item_count: int  # Add the item_count to your data model
 
+@app.get("/")
+async def check_server():
+    response = {"Status":"Server is runningg.."}
+    return response
+
 @app.post("/frequent-items/")
 async def get_frequent_items(data: Dataset):
     transactions = list(data.dataset.values())
