@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rec_ecommerce/core/design/components/app_snackbar.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
 import 'package:rec_ecommerce/features/order/repository/order_repo.dart';
 import 'package:rec_ecommerce/features/products/controller/products_controller.dart';
@@ -78,28 +79,29 @@ class OrderController extends StateNotifier<bool> {
   }
 
   void getFrequentlyBoughtProducts(BuildContext context, String category, {int itemCount = 2, double support = 0.5}) async {
-    var allOrders = await _orderRepo.getAllOrders().first;
+    try {
+      final allOrders = await _orderRepo.getAllOrders().first;
 
-    Map<String, List<String>> productsByOrderId = {};
+      final productsByOrderId = <String, List<String>>{};
 
-    for (var order in allOrders) {
-      for (var productByCategory in order.allItems) {
-        if (productByCategory.category == category) {
-          if (!productsByOrderId.containsKey(order.orderId)) {
-            productsByOrderId[order.orderId] = [];
-          }
-          productsByOrderId[order.orderId]?.addAll(productByCategory.items);
-        }
+      allOrders.forEach((order) {
+        order.allItems.where((productByCategory) => productByCategory.category == category).forEach((productByCategory) {
+          productsByOrderId.putIfAbsent(order.orderId, () => []);
+          productsByOrderId[order.orderId]!.addAll(productByCategory.items);
+        });
+      });
+
+      final frequentItems = FrequentItems(dataset: productsByOrderId, support: support, itemCount: itemCount);
+      final res = await _frequentItemServices.getFrequenctProducts(frequentItems, context);
+
+      print(res);
+    } catch (e) {
+      print('Error fetching frequently bought products: $e');
+      if (e.toString().contains("Not found")) {
+        AppSnackBar().show(context, "Frequent Items is not available");
+      } else if (e.toString().contains("Connection refused")) {
+        AppSnackBar().show(context, "Server is not connected!");
       }
     }
-
-    Map<String, List<String>> formattedOutput = {};
-    productsByOrderId.forEach((orderId, products) {
-      formattedOutput[orderId] = products;
-    });
-
-    FrequentItems frequentItems = FrequentItems(dataset: formattedOutput, support: support, itemCount: itemCount);
-    var res = await _frequentItemServices.getFrequenctProducts(frequentItems, context);
-    print(res);
   }
 }

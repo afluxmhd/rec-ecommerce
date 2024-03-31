@@ -54,91 +54,92 @@ class _HomePageState extends ConsumerState<HomePage> {
                   bgColor: Colors.transparent,
                   onTap: () {
                     showDialog(
-                        context: context,
-                        builder: (ctx) => Container(
-                              margin: EdgeInsets.symmetric(vertical: 160.w, horizontal: 40.w),
-                              height: 200.h,
-                              width: 200.w,
-                              padding: EdgeInsets.symmetric(vertical: 20.w, horizontal: 40.w),
-                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r)),
-                              child: Material(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10.r),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    AppText.bodyTwoMedium("Configure Recommendations", textAlign: TextAlign.center),
-                                    SizedBox(height: 16.h),
-                                    AppText.bodyThreeRegular("Select Combination", textAlign: TextAlign.center),
-                                    SizedBox(height: 14.h),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: List.generate(
-                                        3,
-                                        (index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              recConfig = recConfig.copyWith(combination: '${index + 1}');
-                                            },
-                                            child: Container(
-                                              height: 22.w,
-                                              width: 22.w,
-                                              margin: EdgeInsets.only(left: 5.w),
-                                              color: Colors.amber,
-                                              alignment: Alignment.center,
-                                              child: AppText.captionOneMedium('${index + 1}', color: AppColors.kOnPrimary),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(height: 30.h),
-                                    AppText.bodyThreeRegular("Select Accuracy", textAlign: TextAlign.center),
-                                    SizedBox(height: 14.h),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: List.generate(
-                                        5,
-                                        (index) {
-                                          final double ratio = index / 4;
-                                          final Color? color = Color.lerp(Colors.redAccent, Colors.green, ratio);
-
-                                          return GestureDetector(
-                                            onTap: () {
-                                              recConfig = recConfig.copyWith(accuracy: '${index + 1}');
-                                            },
-                                            child: Container(
-                                              height: 22.w,
-                                              width: 22.w,
-                                              alignment: Alignment.center,
-                                              margin: EdgeInsets.only(left: 5.w),
-                                              color: color,
-                                              child: AppText.captionOneMedium('${index + 1}', color: AppColors.kPrimaryLight),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(height: 18.h),
-                                    AppText.captionTwoRegular(
-                                      'Note: Accuracy and combinations aren\'t always guaranteed, depending on available data or orders',
-                                      textAlign: TextAlign.center,
-                                      color: AppColors.kError,
-                                    ),
-                                    const Spacer(),
-                                    AppButton(
-                                      height: 38,
-                                      width: 120.w,
-                                      label: "Configure",
+                      context: context,
+                      builder: (ctx) => Container(
+                        margin: EdgeInsets.symmetric(vertical: 160.w, horizontal: 40.w),
+                        height: 200.h,
+                        width: 200.w,
+                        padding: EdgeInsets.symmetric(vertical: 20.w, horizontal: 40.w),
+                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r)),
+                        child: Material(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.r),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              AppText.bodyTwoMedium("Configure Recommendations", textAlign: TextAlign.center),
+                              SizedBox(height: 16.h),
+                              AppText.bodyThreeRegular("Select Combination", textAlign: TextAlign.center),
+                              SizedBox(height: 14.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  3,
+                                  (index) {
+                                    return GestureDetector(
                                       onTap: () {
-                                        ref.read(userControllerProvider).saveRecConfiguration(context, recConfig);
-                                        Navigator.pop(ctx);
+                                        recConfig = recConfig.copyWith(combination: '${index + 1}');
                                       },
-                                    )
-                                  ],
+                                      child: Container(
+                                        height: 22.w,
+                                        width: 22.w,
+                                        margin: EdgeInsets.only(left: 5.w),
+                                        color: Colors.amber,
+                                        alignment: Alignment.center,
+                                        child: AppText.captionOneMedium('${index + 1}', color: AppColors.kOnPrimary),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
-                            ));
+                              SizedBox(height: 30.h),
+                              AppText.bodyThreeRegular("Select Accuracy", textAlign: TextAlign.center),
+                              SizedBox(height: 14.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  5,
+                                  (index) {
+                                    final double ratio = index / 4;
+                                    final Color? color = Color.lerp(Colors.redAccent, Colors.green, ratio);
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        recConfig = recConfig.copyWith(accuracy: '${index + 1}');
+                                      },
+                                      child: Container(
+                                        height: 22.w,
+                                        width: 22.w,
+                                        alignment: Alignment.center,
+                                        margin: EdgeInsets.only(left: 5.w),
+                                        color: color,
+                                        child: AppText.captionOneMedium('${index + 1}', color: AppColors.kPrimaryLight),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              SizedBox(height: 18.h),
+                              AppText.captionTwoRegular(
+                                'Note: Accuracy and combinations aren\'t always guaranteed, depending on available data or orders',
+                                textAlign: TextAlign.center,
+                                color: AppColors.kError,
+                              ),
+                              const Spacer(),
+                              AppButton(
+                                height: 38,
+                                width: 120.w,
+                                label: "Configure",
+                                onTap: () {
+                                  ref.read(userControllerProvider).saveRecConfiguration(context, recConfig);
+                                  Navigator.pop(ctx);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
                 AppIconButton(

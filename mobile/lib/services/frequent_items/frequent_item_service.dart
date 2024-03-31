@@ -24,12 +24,8 @@ class FrequentItemServices {
       if (res.containsKey("1") && res["1"] is List<dynamic>) {
         frequentProducts = List<String>.from(res["1"]);
       }
-    } on Exception catch (e) {
-      if (e.toString().contains("Not found")) {
-        frequentProducts = [];
-        // ignore: use_build_context_synchronously
-        AppSnackBar().show(context, "Frequent Items is not available");
-      }
+    } catch (e) {
+      rethrow;
     }
 
     return frequentProducts;
