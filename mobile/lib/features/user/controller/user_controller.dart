@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rec_ecommerce/core/design/components/app_snackbar.dart';
@@ -28,6 +30,30 @@ class UserController extends StateNotifier<bool> {
   }
 
   Future<RecConfiguration> getUserRecommendationConfiguration() async {
-    return await _userRepo.getRecConfiguration();
+    var val = await _userRepo.getRecConfiguration();
+
+    if (val == null) {
+      return RecConfiguration(
+        combination: '2',
+        accuracy: '5',
+      );
+    }
+
+    // Extracting values using RegExp
+    RegExp regExp = RegExp(r'(\d+)');
+    Iterable<Match> matches = regExp.allMatches(val);
+
+    // Checking if matches are found
+    if (matches.length >= 2) {
+      String combination = matches.elementAt(0).group(0)!;
+      String accuracy = matches.elementAt(1).group(0)!;
+
+      return RecConfiguration(
+        combination: combination,
+        accuracy: accuracy,
+      );
+    } else {
+      throw FormatException('Invalid format: $val');
+    }
   }
 }

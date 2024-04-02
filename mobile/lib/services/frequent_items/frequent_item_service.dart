@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rec_ecommerce/models/frequent_items.dart';
 import 'package:rec_ecommerce/services/api/api_client.dart';
 import 'package:rec_ecommerce/services/api/api_routes.dart';
-
-import '../../core/design/components/app_snackbar.dart';
 
 final frequentItemServiceProvider = Provider((ref) {
   return FrequentItemServices(apiClient: ref.watch(apiClientProvider), ref: ref);
@@ -17,7 +14,7 @@ class FrequentItemServices {
   final APIClient apiClient;
   final Ref ref;
 
-  Future<List<String>> getFrequenctProducts(FrequentItems data, BuildContext context) async {
+  Future<List<String>> getFrequenctProducts(FrequentItems data) async {
     List<String> frequentProducts = [];
     try {
       var res = await apiClient.post(APIRoutes.baseUrl + APIRoutes.frequenyItemsPath, data.toMap());

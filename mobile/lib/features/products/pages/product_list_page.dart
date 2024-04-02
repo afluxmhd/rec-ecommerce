@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rec_ecommerce/core/design/components/app_snackbar.dart';
 import 'package:rec_ecommerce/core/design/components/app_text.dart';
 import 'package:rec_ecommerce/core/design/components/icon_button.dart';
 import 'package:rec_ecommerce/core/design/shared/app_colors.dart';
@@ -9,7 +8,6 @@ import 'package:rec_ecommerce/features/order/controller/order_controller.dart';
 import 'package:rec_ecommerce/features/products/controller/products_controller.dart';
 import 'package:rec_ecommerce/features/products/pages/product_view_page.dart';
 import 'package:rec_ecommerce/models/product.dart';
-import 'package:rec_ecommerce/services/frequent_items/frequent_item_service.dart';
 import 'package:rec_ecommerce/widgets/loader_widget.dart';
 
 class ProductListPage extends ConsumerStatefulWidget {
@@ -35,7 +33,8 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
     "https://prod-img.thesouledstore.com/public/theSoul/uploads/catalog/product/1700825859_2645397.jpg?format=webp&w=480&dpr=2.0"
   ];
 
-  List<Product> products = [];
+  List<Product> recentProducts = [];
+  List<Product> frequentProducts = [];
 
   @override
   void initState() {
@@ -47,19 +46,20 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
   }
 
   void _getRecentOrders() async {
-    products = await ref.read(orderControllerProvider.notifier).getRecentOrders();
+    recentProducts = await ref.read(orderControllerProvider.notifier).getRecentOrders();
     setState(() {});
   }
 
   void _getFrequenctlyBoughtTogether() async {
-    ref.read(orderControllerProvider.notifier).getFrequentlyBoughtProducts(context, widget.category);
+    frequentProducts = await ref.read(orderControllerProvider.notifier).getFrequentlyBoughtProducts(context, widget.category);
   }
 
   @override
   Widget build(BuildContext context) {
+    var frequentProductLoading = ref.watch(frequentProductLoaderProvider);
     return SafeArea(
       child: Scaffold(
-        body: Padding(
+        body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,8 +85,8 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
               SizedBox(height: 10.h),
               AppText.bodyTwoMedium("Most Popular"),
               SizedBox(
-                  height: 250,
-                  child: ref.watch(productsStreamProvider(widget.category)).when(
+                height: 250,
+                child: ref.watch(productsStreamProvider(widget.category)).when(
                       data: (data) {
                         return ListView.builder(
                           physics: const BouncingScrollPhysics(),
@@ -115,82 +115,21 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                       error: (err, stTrace) {
                         return ErrorWidget(Exception(err));
                       },
-                      loading: () => const LoaderWidget())),
+                      loading: () => const LoaderWidget(),
+                    ),
+              ),
               SizedBox(height: 20.h),
               AppText.bodyTwoMedium("Frequently bought together"),
               SizedBox(height: 10.h),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  height: 130,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 120,
-                        height: 120,
-                        margin: EdgeInsets.only(top: 5.w, bottom: 5.w),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r), color: Colors.amber),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.r),
-                          child: Image.network(
-                            networkFrequentlyImgPaths[0],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.symmetric(horizontal: 3.w),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(34.r)),
-                        child: const Center(child: Icon(Icons.add, color: AppColors.kIcon)),
-                      ),
-                      Container(
-                        width: 120,
-                        height: 120,
-                        margin: EdgeInsets.only(top: 5.w, bottom: 5.w),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r), color: Colors.amber),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.r),
-                          child: Image.network(
-                            networkFrequentlyImgPaths[1],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.symmetric(horizontal: 3.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(34.r),
-                        ),
-                        child: const Center(child: Icon(Icons.add, color: AppColors.kIcon)),
-                      ),
-                      Container(
-                        width: 120,
-                        height: 120,
-                        margin: EdgeInsets.only(top: 5.w, bottom: 5.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
-                          color: Colors.amber,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.r),
-                          child: Image.network(
-                            networkFrequentlyImgPaths[2],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              frequentProducts.isNotEmpty
+                  ? _buildProductRow(context, frequentProducts)
+                  : _buildEmptyFrequentState(frequentProductLoading),
               SizedBox(height: 20.h),
               AppText.bodyTwoMedium("Recent bought together"),
               SizedBox(height: 10.h),
-              products.isNotEmpty ? _buildProductRow(context, products) : _buildEmptyState()
+              recentProducts.isNotEmpty
+                  ? _buildProductRow(context, recentProducts)
+                  : _buildEmptyOrderState(frequentProductLoading)
             ],
           ),
         ),
@@ -249,19 +188,46 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
     );
   }
 
-  Column _buildEmptyState() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(height: 30.h),
-        const Center(
-          child: Icon(Icons.shopping_bag, color: AppColors.kAccent),
-        ),
-        SizedBox(height: 5.h),
-        Center(
-          child: AppText.captionOneMedium("No recently purchased items"),
-        ),
-      ],
+  _buildEmptyOrderState(bool productLoader) {
+    return productLoader
+        ? const LoaderWidget()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 30.h),
+              const Center(
+                child: Icon(Icons.shopping_bag, color: AppColors.kAccent),
+              ),
+              SizedBox(height: 5.h),
+              Center(
+                child: AppText.captionOneMedium("No recently purchased items"),
+              ),
+            ],
+          );
+  }
+
+  _buildEmptyFrequentState(bool productLoader) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 28.h),
+      child: productLoader
+          ? const LoaderWidget()
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    "assets/images/empty_frequent.png",
+                    height: 100.h,
+                    width: 100.w,
+                  ),
+                ),
+                //assets/images/empty_frequent.png
+                SizedBox(height: 5.h),
+                Center(
+                  child: AppText.captionOneMedium("Please check your configuration"),
+                ),
+              ],
+            ),
     );
   }
 }

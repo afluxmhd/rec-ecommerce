@@ -38,6 +38,7 @@ class _CartListCardWidgetState extends State<CartListCardWidget> {
           children: [
             AppText.bodyOneMedium("Swipe to remove", color: AppColors.kWhite),
             SizedBox(width: 5.w),
+            // ignore: deprecated_member_use
             SvgPicture.asset("assets/icons/Trash can.svg", color: AppColors.kPrimaryLight),
           ],
         ),

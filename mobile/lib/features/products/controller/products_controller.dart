@@ -15,6 +15,7 @@ final productsControllerProvider = StateNotifierProvider<ProductsController, boo
 
 class ProductsController extends StateNotifier<bool> {
   final ProductsRepo _productsRepo;
+  // ignore: unused_field
   final Ref _ref;
 
   ProductsController({

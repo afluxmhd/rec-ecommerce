@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
           title: 'Rec_ecommerce',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
-          home: HomePage(),
+          home: const HomePage(),
         ),
       ),
     );

@@ -39,6 +39,7 @@ class AppIconButton extends StatelessWidget {
           svgPath,
           height: iconSize.h,
           width: iconSize.w,
+          // ignore: deprecated_member_use
           color: iconColor,
         )),
       ),

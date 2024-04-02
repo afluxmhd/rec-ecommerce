@@ -7,7 +7,6 @@ import 'package:rec_ecommerce/core/design/components/icon_button.dart';
 import 'package:rec_ecommerce/core/design/shared/app_colors.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
 import 'package:rec_ecommerce/features/cart/pages/cart_page.dart';
-import 'package:rec_ecommerce/models/cart.dart';
 import 'package:rec_ecommerce/models/cart_item.dart';
 import 'package:rec_ecommerce/models/product.dart';
 import 'package:rec_ecommerce/widgets/loader_widget.dart';

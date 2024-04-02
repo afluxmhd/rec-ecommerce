@@ -9,13 +9,17 @@ class UserRepo {
   final recommendationConfigureKeys = 'rec_configuration_key';
 
   Future<bool> saveRecConfiguration(dynamic body) async {
-    print(body);
     SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.setString(recommendationConfigureKeys, body);
   }
 
-  Future<dynamic> getRecConfiguration() async {
+  Future<String?> getRecConfiguration() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getString(recommendationConfigureKeys);
+  }
+
+  Future<dynamic> removeRecConfiguration() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.remove(recommendationConfigureKeys);
   }
 }

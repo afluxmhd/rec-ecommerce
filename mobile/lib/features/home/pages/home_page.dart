@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rec_ecommerce/core/design/components/app_button.dart';
 import 'package:rec_ecommerce/core/design/components/app_text.dart';
 import 'package:rec_ecommerce/core/design/components/icon_button.dart';
 import 'package:rec_ecommerce/core/design/shared/app_colors.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
 import 'package:rec_ecommerce/features/cart/pages/cart_page.dart';
+import 'package:rec_ecommerce/features/home/component/config_dialog.dart';
 import 'package:rec_ecommerce/features/products/pages/product_list_page.dart';
-import 'package:rec_ecommerce/features/user/controller/user_controller.dart';
-import 'package:rec_ecommerce/models/rec_configuration.dart';
+import 'package:rec_ecommerce/features/user/repository/user_repo.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -27,8 +26,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   ];
 
   final List<String> categories = ["cosmetics", "fashion", "stationary", "grocery"];
-
-  RecConfiguration recConfig = RecConfiguration(combination: '2', accuracy: '4');
 
   @override
   void initState() {
@@ -53,93 +50,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   svgPath: "assets/icons/Category.svg",
                   bgColor: Colors.transparent,
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => Container(
-                        margin: EdgeInsets.symmetric(vertical: 160.w, horizontal: 40.w),
-                        height: 200.h,
-                        width: 200.w,
-                        padding: EdgeInsets.symmetric(vertical: 20.w, horizontal: 40.w),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r)),
-                        child: Material(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.r),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              AppText.bodyTwoMedium("Configure Recommendations", textAlign: TextAlign.center),
-                              SizedBox(height: 16.h),
-                              AppText.bodyThreeRegular("Select Combination", textAlign: TextAlign.center),
-                              SizedBox(height: 14.h),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  3,
-                                  (index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        recConfig = recConfig.copyWith(combination: '${index + 1}');
-                                      },
-                                      child: Container(
-                                        height: 22.w,
-                                        width: 22.w,
-                                        margin: EdgeInsets.only(left: 5.w),
-                                        color: Colors.amber,
-                                        alignment: Alignment.center,
-                                        child: AppText.captionOneMedium('${index + 1}', color: AppColors.kOnPrimary),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              SizedBox(height: 30.h),
-                              AppText.bodyThreeRegular("Select Accuracy", textAlign: TextAlign.center),
-                              SizedBox(height: 14.h),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  5,
-                                  (index) {
-                                    final double ratio = index / 4;
-                                    final Color? color = Color.lerp(Colors.redAccent, Colors.green, ratio);
-
-                                    return GestureDetector(
-                                      onTap: () {
-                                        recConfig = recConfig.copyWith(accuracy: '${index + 1}');
-                                      },
-                                      child: Container(
-                                        height: 22.w,
-                                        width: 22.w,
-                                        alignment: Alignment.center,
-                                        margin: EdgeInsets.only(left: 5.w),
-                                        color: color,
-                                        child: AppText.captionOneMedium('${index + 1}', color: AppColors.kPrimaryLight),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              SizedBox(height: 18.h),
-                              AppText.captionTwoRegular(
-                                'Note: Accuracy and combinations aren\'t always guaranteed, depending on available data or orders',
-                                textAlign: TextAlign.center,
-                                color: AppColors.kError,
-                              ),
-                              const Spacer(),
-                              AppButton(
-                                height: 38,
-                                width: 120.w,
-                                label: "Configure",
-                                onTap: () {
-                                  ref.read(userControllerProvider).saveRecConfiguration(context, recConfig);
-                                  Navigator.pop(ctx);
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+                    showDialog(context: context, builder: (ctx) => const ConfigDialogWidget());
                   },
                 ),
                 AppIconButton(

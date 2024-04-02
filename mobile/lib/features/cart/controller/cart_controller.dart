@@ -4,7 +4,6 @@ import 'package:rec_ecommerce/core/design/components/app_snackbar.dart';
 import 'package:rec_ecommerce/features/cart/repo/cart_repo.dart';
 import 'package:rec_ecommerce/models/cart.dart';
 import 'package:rec_ecommerce/models/cart_item.dart';
-import 'package:rec_ecommerce/models/order.dart';
 import 'package:rec_ecommerce/models/product.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -152,7 +151,9 @@ class CartController extends StateNotifier<bool> {
         }
       }
     } else {
-      AppSnackBar().show(context, "Cart ID is empty");
+      if (context.mounted) {
+        AppSnackBar().show(context, "Cart ID is empty");
+      }
     }
   }
 
@@ -170,13 +171,13 @@ class CartController extends StateNotifier<bool> {
             fetchExistingCart(context);
           });
         } else {
-          print("Product not found in the cart");
+          debugPrint("Product not found in the cart");
         }
       } else {
-        print("Cart not found");
+        debugPrint("Cart not found");
       }
     } else {
-      print("Cart ID is empty");
+      debugPrint("Cart ID is empty");
     }
   }
 
@@ -198,13 +199,13 @@ class CartController extends StateNotifier<bool> {
             fetchExistingCart(context);
           });
         } else {
-          print("Product not found in the cart");
+          debugPrint("Product not found in the cart");
         }
       } else {
-        print("Cart not found");
+        debugPrint("Cart not found");
       }
     } else {
-      print("Cart ID is empty");
+      debugPrint("Cart ID is empty");
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:rec_ecommerce/core/design/components/app_snackbar.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
 import 'package:rec_ecommerce/features/order/repository/order_repo.dart';
 import 'package:rec_ecommerce/features/products/controller/products_controller.dart';
+import 'package:rec_ecommerce/features/user/controller/user_controller.dart';
 import 'package:rec_ecommerce/models/frequent_items.dart';
 import 'package:rec_ecommerce/models/order.dart';
 import 'package:rec_ecommerce/models/product.dart';
@@ -14,6 +15,8 @@ final orderControllerProvider = StateNotifierProvider<OrderController, bool>((re
   final frequentItemService = ref.watch(frequentItemServiceProvider);
   return OrderController(ref: ref, orderRepo: orderRepo, frequentItemServices: frequentItemService);
 });
+
+final frequentProductLoaderProvider = StateProvider<bool>((ref) => false);
 
 class OrderController extends StateNotifier<bool> {
   final OrderRepo _orderRepo;
@@ -78,30 +81,58 @@ class OrderController extends StateNotifier<bool> {
     return products;
   }
 
-  void getFrequentlyBoughtProducts(BuildContext context, String category, {int itemCount = 2, double support = 0.5}) async {
+  Future<List<Product>> getFrequentlyBoughtProducts(BuildContext context, String category) async {
+    _ref.read(frequentProductLoaderProvider.notifier).update((state) => true);
     try {
       final allOrders = await _orderRepo.getAllOrders().first;
-
       final productsByOrderId = <String, List<String>>{};
 
-      allOrders.forEach((order) {
+      for (var order in allOrders) {
         order.allItems.where((productByCategory) => productByCategory.category == category).forEach((productByCategory) {
           productsByOrderId.putIfAbsent(order.orderId, () => []);
           productsByOrderId[order.orderId]!.addAll(productByCategory.items);
         });
-      });
-
-      final frequentItems = FrequentItems(dataset: productsByOrderId, support: support, itemCount: itemCount);
-      final res = await _frequentItemServices.getFrequenctProducts(frequentItems, context);
-
-      print(res);
-    } catch (e) {
-      print('Error fetching frequently bought products: $e');
-      if (e.toString().contains("Not found")) {
-        AppSnackBar().show(context, "Frequent Items is not available");
-      } else if (e.toString().contains("Connection refused")) {
-        AppSnackBar().show(context, "Server is not connected!");
       }
+
+      ///Fetching user rec_configs:
+      var recConfig = await _ref.read(userControllerProvider).getUserRecommendationConfiguration();
+
+      ///Support value conversion.
+      double support = _convertSupport(recConfig.accuracy);
+
+      print("SUPPORT: ${support}");
+
+      final frequentItems =
+          FrequentItems(dataset: productsByOrderId, support: support, itemCount: int.parse(recConfig.combination));
+      final productTitles = await _frequentItemServices.getFrequenctProducts(frequentItems);
+      List<Product> frequentProducts = [];
+
+      for (var title in productTitles) {
+        Product product = await _ref.read(productsControllerProvider.notifier).getProductByName(title);
+        frequentProducts.add(product);
+      }
+      _ref.read(frequentProductLoaderProvider.notifier).update((state) => false);
+
+      return frequentProducts;
+    } catch (e) {
+      _ref.read(frequentProductLoaderProvider.notifier).update((state) => false);
+      if (context.mounted) {
+        if (e.toString().contains("Not found")) {
+          AppSnackBar().show(context, "Frequent Items is not available");
+        } else if (e.toString().contains("Connection refused")) {
+          AppSnackBar().show(context, "Server is not connected!");
+        } else if (e.toString().contains("Server error")) {
+          AppSnackBar().show(context, "Somthing went wrong!");
+        }
+      }
+      return [];
     }
+  }
+
+  _convertSupport(String accuracyLevel) {
+    // Assuming accuracyLevel ranges from "1" to "5"
+    int level = int.parse(accuracyLevel);
+    double convertedValue = (level - 1) / 4; // Convert to range 0 to 1
+    return convertedValue;
   }
 }
