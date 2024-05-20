@@ -20,19 +20,6 @@ class ProductListPage extends ConsumerStatefulWidget {
 }
 
 class _ProductListPageState extends ConsumerState<ProductListPage> {
-  final List<String> networkProductsImgPaths = [
-    "https://media.voguebusiness.com/photos/642c3460706ee157689b66bd/master/pass/ai-fashion-week-voguebus-story.jpg",
-    "https://img.freepik.com/free-photo/high-fashion-look-glamor-closeup-portrait-beautiful-sexy-stylish-caucasian-young-woman-model_158538-2774.jpg",
-    "https://i.pinimg.com/736x/fc/ec/0d/fcec0db61ad2b49c65953bacb8ae01f0.jpg",
-    ""
-  ];
-
-  final List<String> networkFrequentlyImgPaths = [
-    "https://5.imimg.com/data5/LN/PI/JS/SELLER-3749501/corparate-trouser-500x500.jpg",
-    "https://justintime.in/cdn/shop/files/Mens_Watches_M_1500x.jpg?v=8590229654416472155",
-    "https://prod-img.thesouledstore.com/public/theSoul/uploads/catalog/product/1700825859_2645397.jpg?format=webp&w=480&dpr=2.0"
-  ];
-
   List<Product> recentProducts = [];
   List<Product> frequentProducts = [];
 
@@ -90,7 +77,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                       data: (data) {
                         return ListView.builder(
                           physics: const BouncingScrollPhysics(),
-                          itemCount: networkProductsImgPaths.length - 1,
+                          itemCount: data.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (ctx, index) => GestureDetector(
                             onTap: () {

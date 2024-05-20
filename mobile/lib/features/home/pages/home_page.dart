@@ -7,8 +7,9 @@ import 'package:rec_ecommerce/core/design/shared/app_colors.dart';
 import 'package:rec_ecommerce/features/cart/controller/cart_controller.dart';
 import 'package:rec_ecommerce/features/cart/pages/cart_page.dart';
 import 'package:rec_ecommerce/features/home/component/config_dialog.dart';
+import 'package:rec_ecommerce/features/products/controller/products_controller.dart';
 import 'package:rec_ecommerce/features/products/pages/product_list_page.dart';
-import 'package:rec_ecommerce/features/user/repository/user_repo.dart';
+import 'package:rec_ecommerce/models/product.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -33,6 +34,64 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
   }
 
+  List<Product> products = [
+    Product(
+      id: '23',
+      title: 'Face Mask',
+      description:
+          'Revitalizing face mask infused with natural ingredients to hydrate and nourish the skin. Leaves your complexion feeling refreshed and rejuvenated after each use.',
+      imgLink:
+          'https://img.etimg.com/thumb/width-1600,height-900,imgsize-400812,resizemode-75,msid-97283796/top-trending-products/lifestyle/5-charcoal-peel-off-masks-for-men-and-women-under-rs-300.jpg',
+      category: 'cosmetics',
+      rating: '4.3',
+      price: 6.99,
+    ),
+    Product(
+      id: '24',
+      title: 'Highlighter Palette',
+      description:
+          'A palette of radiant highlighter shades to enhance your features. Buildable formula that glides on smoothly for a luminous glow, perfect for day or night.',
+      imgLink:
+          'https://resources.commerceup.io/?key=https://prod-admin-images.s3.ap-south-1.amazonaws.com/JgyWjz9rvHrN0G1LUw57/product/sph001-main.jpg&width=800&resourceKey=JgyWjz9rvHrN0G1LUw57&jpeg=true',
+      category: 'cosmetics',
+      rating: '4.7',
+      price: 19.99,
+    ),
+    Product(
+      id: '25',
+      title: 'Makeup Brushes Set',
+      description:
+          'Complete set of high-quality makeup brushes for effortless application. Soft bristles and ergonomic handles for precise blending and flawless makeup looks.',
+      imgLink:
+          'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSRkoMBVRuN38M9H7G_9DiENsPaE7QyofSMNjXiRC9Rvt9Ml5b4uBmB3T6AyVHx51Xd9vHL1dY&usqp=CAE',
+      category: 'cosmetics',
+      rating: '4.6',
+      price: 29.99,
+    ),
+    Product(
+      id: '26',
+      title: 'Beard Oil',
+      description:
+          'Nourishing beard oil enriched with natural oils to soften and condition facial hair. Promotes healthy beard growth and prevents dryness and itchiness for a well-groomed look.',
+      imgLink:
+          'https://rukminim2.flixcart.com/image/850/1000/xif0q/hair-oil/c/r/c/50-strong-beard-oil-for-men-dadi-mooch-oil-natural-beard-oil-for-original-imagzhhhnht6kzq2.jpeg?q=90&crop=false',
+      category: 'cosmetics',
+      rating: '4.6',
+      price: 12.99,
+    ),
+    Product(
+      id: '27',
+      title: 'Men\'s Cologne',
+      description:
+          'Refined cologne with a masculine scent that exudes confidence and sophistication. Long-lasting fragrance that leaves a lasting impression, perfect for any occasion.',
+      imgLink:
+          'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQiG4kkubV-mRxjAwtyGGjzSpKb8DAzRgBKMczD6Pv16eVrz04JsO0ZXYpXYVFiNXnV3n04-GNR&usqp=CAE',
+      category: 'cosmetics',
+      rating: '4.8',
+      price: 29.99,
+    )
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -51,6 +110,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                   bgColor: Colors.transparent,
                   onTap: () {
                     showDialog(context: context, builder: (ctx) => const ConfigDialogWidget());
+                    // for (var prod in products) {
+                    //   ref.read(productsControllerProvider.notifier).addProduct(prod);
+                    // }
                   },
                 ),
                 AppIconButton(
@@ -69,9 +131,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             SizedBox(height: 16.w),
             Expanded(
               child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 0.56.h,
                 ),
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (ctx, index) {
@@ -106,7 +168,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                   );
                 },
-                itemCount: 4,
+                itemCount: categories.length,
               ),
             )
           ],

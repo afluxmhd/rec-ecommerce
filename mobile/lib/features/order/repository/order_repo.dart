@@ -28,7 +28,7 @@ class OrderRepo {
   Stream<app.Order?> getOrders(String userId) {
     return _orders.where("userId", isEqualTo: userId).snapshots().map((querySnapshot) {
       return app.Order.fromMap(
-        querySnapshot.docs.first.data() as Map<String, dynamic>,
+        querySnapshot.docs.last.data() as Map<String, dynamic>,
       );
     });
   }

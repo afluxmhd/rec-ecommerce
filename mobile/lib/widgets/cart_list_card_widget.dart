@@ -77,7 +77,7 @@ class _CartListCardWidgetState extends State<CartListCardWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      AppText.bodyTwoMedium("\$${widget.cartProduct.totalAmount.toStringAsFixed(2)}"),
+                      AppText.bodyTwoMedium("₹${widget.cartProduct.totalAmount.toStringAsFixed(2)}"),
                       Container(
                         width: 75.w,
                         padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 5.w),

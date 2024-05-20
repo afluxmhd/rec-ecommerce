@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'app_colors.dart'; // Assuming this is the file name where you've defined AppColors
+import 'app_colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {

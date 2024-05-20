@@ -31,12 +31,19 @@ class OrderController extends StateNotifier<bool> {
 
   Future<void> orderCartProducts({required BuildContext context}) async {
     var cart = _ref.read(cartProvider);
-    var cartId = cart!.id;
+
+    var cartId = cart?.id;
+
+    if (cartId == null) {
+      Navigator.pop(context);
+      return;
+    }
+
     List<PorductsByCategory> items = [];
 
     // Group cart products by category
     Map<String, List<String>> categoryMap = {};
-    for (var cartItem in cart.cartProducts) {
+    for (var cartItem in cart!.cartProducts) {
       String category = cartItem.product.category;
       if (!categoryMap.containsKey(category)) {
         categoryMap[category] = [];

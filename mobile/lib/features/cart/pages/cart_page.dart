@@ -63,7 +63,6 @@ class _CartPageState extends ConsumerState<CartPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 5.w),
                   Expanded(
                     flex: 2,
                     child: ref.watch(cartStreamProvider(cartId.isEmpty ? "1" : cartId)).when(
@@ -72,26 +71,28 @@ class _CartPageState extends ConsumerState<CartPage> {
                           loading: () => const CircularProgressIndicator(),
                         ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 10.w),
-                        AppText.bodyOneMedium("Order Summary"),
-                        const Divider(thickness: 0.3, color: AppColors.kSurface),
-                        buildOrderSummaryWidget("Item Total", "\$${ref.read(cartControllerProvider.notifier).getItemTotal(cart)}",
-                            isBold: true),
-                        buildOrderSummaryWidget("Delivery Charges", "\$4.99"),
-                        buildOrderSummaryWidget(
-                            "Taxes & Charges", "\$${ref.read(cartControllerProvider.notifier).getTotalTax(cart)}"),
-                        const Divider(thickness: 0.3, color: AppColors.kSurface),
-                        buildOrderSummaryWidget(
-                            "Total to Pay", "\$${ref.read(cartControllerProvider.notifier).getTotalToPay(cart)}",
-                            isBold: true),
-                      ],
-                    ),
-                  )
+                  if (cart?.cartProducts.isNotEmpty ?? false)
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10.w),
+                          AppText.bodyOneMedium("Order Summary"),
+                          const Divider(thickness: 0.3, color: AppColors.kSurface),
+                          buildOrderSummaryWidget(
+                              "Item Total", "₹${ref.read(cartControllerProvider.notifier).getItemTotal(cart)}",
+                              isBold: true),
+                          buildOrderSummaryWidget("Delivery Charges", "₹4.99"),
+                          buildOrderSummaryWidget(
+                              "Taxes & Charges", "₹${ref.read(cartControllerProvider.notifier).getTotalTax(cart)}"),
+                          const Divider(thickness: 0.3, color: AppColors.kSurface),
+                          buildOrderSummaryWidget(
+                              "Total to Pay", "₹${ref.read(cartControllerProvider.notifier).getTotalToPay(cart)}",
+                              isBold: true),
+                        ],
+                      ),
+                    )
                 ],
               ),
             ),
@@ -106,34 +107,20 @@ class _CartPageState extends ConsumerState<CartPage> {
                 decoration: BoxDecoration(
                     color: AppColors.kAccent,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(10.r), topRight: Radius.circular(10.r))),
-                child: AppText.bodyTwoSemiBold("ORDER NOW", color: AppColors.kWhite),
+                child: AppText.bodyTwoSemiBold(cart?.cartProducts.isNotEmpty ?? false ? "ORDER NOW" : "BACK TO HOME",
+                    color: AppColors.kWhite),
               ),
             )));
   }
 
   Widget _buildCartWidget(Cart? data) {
     cart = data;
-    if (data == null) {
+
+    if (data == null || data.cartProducts.isEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 30.h),
-          Image.asset(
-            "assets/images/add_to_cart.png",
-            height: 200.h,
-            width: 200.w,
-          ),
-          Center(
-            child: AppText.bodyOneMedium("EMPTY CART!"),
-          ),
-        ],
-      );
-    }
-    if (data.cartProducts.isEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 30.h),
           Image.asset(
             "assets/images/add_to_cart.png",
             height: 200.h,

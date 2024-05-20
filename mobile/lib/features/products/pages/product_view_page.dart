@@ -136,7 +136,7 @@ class _ProductViewPageState extends ConsumerState<ProductViewPage> {
                                   children: [
                                     AppText.headingThreeSemiBold(widget.product.title),
                                     SizedBox(height: 5.w),
-                                    AppText.bodyTwoSemiBold("Rs: ${widget.product.price}", color: AppColors.kPrimaryVariant),
+                                    AppText.bodyTwoSemiBold("₹${widget.product.price}/-", color: AppColors.kPrimaryVariant),
                                   ],
                                 ),
                                 const AppIconButton(svgPath: "assets/icons/Heart.svg")
